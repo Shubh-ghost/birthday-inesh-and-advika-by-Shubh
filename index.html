@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy 5th Birthday Inesh & Advika</title>
+  <style>
+    :root {
+      --deep: #041d2d;
+      --sea1: #0b3f5d;
+      --sea2: #0d6d8d;
+      --sea3: #1aa9c8;
+      --aqua: #7be4ff;
+      --foam: #eafcff;
+      --pink: #ff9ec0;
+      --peach: #ffd8bb;
+      --gold: #ffe7a8;
+      --glass: rgba(255,255,255,0.12);
+      --border: rgba(255,255,255,0.22);
+      --shadow: rgba(0,0,0,0.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,0.22), transparent 20%),
+        linear-gradient(180deg, #031a2b 0%, #0a3351 22%, #0d5b7d 40%, #2295b5 66%, #38cde3 100%);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .scene {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .water-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .sun-glow {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      left: 50%;
+      top: 8%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.7), rgba(255,237,168,0.5), rgba(255,255,255,0) 70%);
+      filter: blur(10px);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .wave {
+      position: absolute;
+      left: -10%;
+      width: 120%;
+      border-radius: 50% 50% 0 0 / 110% 110% 0 0;
+      opacity: 0.8;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+
+    .wave.one {
+      bottom: 17%;
+      height: 220px;
+      background: linear-gradient(180deg, rgba(135, 223, 255, 0.32), rgba(18, 99, 127, 0.12));
+    }
+
+    .wave.two {
+      bottom: 8%;
+      height: 260px;
+      background: linear-gradient(180deg, rgba(61, 174, 214, 0.28), rgba(10, 62, 88, 0.18));
+      animation-duration: 20s;
+    }
+
+    .wave.three {
+      bottom: -6%;
+      height: 290px;
+      background: linear-gradient(180deg, rgba(11, 96, 120, 0.38), rgba(5, 48, 67, 0.24));
+      animation-duration: 22s;
+    }
+
+    .foam {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 105px;
+      background:
+        radial-gradient(circle at 12% 55%, rgba(255,255,255,0.9) 0 10%, transparent 11%),
+        radial-gradient(circle at 26% 45%, rgba(255,255,255,0.85) 0 12%, transparent 13%),
+        radial-gradient(circle at 45% 60%, rgba(255,255,255,0.8) 0 11%, transparent 12%),
+        radial-gradient(circle at 64% 48%, rgba(255,255,255,0.75) 0 10%, transparent 11%),
+        radial-gradient(circle at 82% 58%, rgba(255,255,255,0.85) 0 10%, transparent 11%),
+        radial-gradient(circle at 95% 50%, rgba(255,255,255,0.8) 0 9%, transparent 10%);
+      opacity: 0.9;
+      filter: blur(1px);
+      animation: foamMove 10s ease-in-out infinite;
+    }
+
+    .bubble-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .creature-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .sea-creature {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: clamp(56px, 7vw, 82px);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: left 6s ease-in-out, top 6s ease-in-out;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.28));
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sea-creature img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 2px solid rgba(255,255,255,0.65);
+      border-radius: 48%;
+      box-shadow: 0 0 20px rgba(157,240,255,0.25);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .sea-creature--green-fish img {
+      filter: hue-rotate(90deg) saturate(1.2);
+    }
+
+    .sea-creature:hover img,
+    .sea-creature:focus-visible img {
+      outline: 3px solid rgba(255,255,255,0.85);
+      outline-offset: 3px;
+    }
+
+    .color-paper {
+      position: absolute;
+      left: var(--origin-x);
+      top: var(--origin-y);
+      width: 9px;
+      height: 13px;
+      border-radius: 2px;
+      background: var(--paper-color);
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      animation: paperBurst 1.15s cubic-bezier(0.12, 0.65, 0.3, 1) forwards;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -12%;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(156,228,255,0.3), rgba(255,255,255,0.08));
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.25);
+      opacity: 0.75;
+      animation: rise linear infinite;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 40px 18px;
+    }
+
+    .hero-card {
+      width: min(92vw, 1100px);
+      background: rgba(8, 34, 46, 0.2);
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+      padding: 36px 24px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-size: clamp(12px, 1.3vw, 16px);
+      color: rgba(255,255,255,0.82);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(34px, 5vw, 78px);
+      line-height: 1.05;
+      letter-spacing: 1px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #fff 0%, #dffaff 30%, #c5f3ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 10px 30px rgba(255,255,255,0.12);
+    }
+
+    .subtitle {
+      margin-top: 18px;
+      text-align: center;
+      font-size: clamp(14px, 1.6vw, 22px);
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .scroll-indicator {
+      margin-top: 26px;
+      text-align: center;
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    .arrow {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 28px;
+      transform: rotate(90deg);
+      animation: downMove 1.5s ease-in-out infinite;
+    }
+
+    .gallery-wrap {
+      width: min(92vw, 1000px);
+      margin: 0 auto 120px;
+    }
+
+    .gallery-scene {
+      display: grid;
+      gap: 20px;
+    }
+
+    .wish-row {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      min-height: 300px;
+      border-radius: 28px;
+      background: rgba(7, 38, 52, 0.22);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+    }
+
+    .wishes-photo {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 300px;
+      object-fit: cover;
+    }
+
+    .wishes-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(28px, 5vw, 64px);
+      background: rgba(4, 29, 45, 0.38);
+    }
+
+    .wishes-label {
+      margin: 0 0 14px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .wishes-copy h2 {
+      margin: 0;
+      font-size: clamp(28px, 3.5vw, 44px);
+      line-height: 1.15;
+      color: var(--foam);
+    }
+
+    .wishes-copy p {
+      margin: 20px 0 0;
+      color: rgba(255,255,255,0.88);
+      font-size: clamp(15px, 1.5vw, 19px);
+      line-height: 1.9;
+    }
+
+    .wishes-signoff {
+      margin-top: 24px;
+      color: var(--aqua);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .final-section {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 40px 18px 80px;
+    }
+
+    .final-card {
+      width: min(92vw, 900px);
+      background: rgba(5, 34, 48, 0.26);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      padding: 42px 24px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .final-card h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 56px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: linear-gradient(180deg, #fff 0%, #dffcff 30%, #b9f1ff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .final-card p {
+      font-size: clamp(14px, 1.5vw, 20px);
+      color: rgba(255,255,255,0.82);
+      line-height: 1.8;
+      max-width: 700px;
+      margin: 18px auto 0;
+    }
+
+    .mini-badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .mini-badges span {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 9px 17px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #eafbff;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 16px rgba(255,255,255,0.8);
+      animation: sparkle 2.8s ease-in-out infinite;
+    }
+
+    .sparkle.s1 { top: 18%; left: 18%; }
+    .sparkle.s2 { top: 22%; right: 16%; animation-delay: 0.8s; }
+    .sparkle.s3 { bottom: 20%; left: 26%; animation-delay: 1.5s; }
+    .sparkle.s4 { bottom: 22%; right: 24%; animation-delay: 2s; }
+
+    .music-button {
+      position: fixed;
+      right: 20px;
+      bottom: 18px;
+      z-index: 100;
+      padding: 12px 18px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(8, 35, 50, 0.45);
+      color: white;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+      transition: 0.25s ease;
+    }
+
+    .music-button:hover {
+      transform: translateY(-2px);
+      background: rgba(12, 48, 67, 0.6);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+      50% { transform: translateX(-50%) scale(1.08); opacity: 1; }
+    }
+
+    @keyframes drift {
+      0% { transform: translateX(-2%) translateY(0) scaleX(1); }
+      50% { transform: translateX(4%) translateY(-10px) scaleX(1.05); }
+      100% { transform: translateX(-3%) translateY(8px) scaleX(1.04); }
+    }
+
+    @keyframes foamMove {
+      0%, 100% { transform: translateX(-1%); opacity: 0.7; }
+      50% { transform: translateX(2%); opacity: 1; }
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      15% { opacity: 0.8; }
+      100% { transform: translateY(-760px) scale(1.3) translateX(25px); opacity: 0; }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { transform: scale(0.4); opacity: 0.2; }
+      50% { transform: scale(1.7); opacity: 1; }
+    }
+
+    @keyframes paperBurst {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
+      }
+      18% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(45deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--travel-x), var(--travel-y)) rotate(var(--spin));
+      }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes downMove {
+      0% { transform: rotate(90deg) translateY(0); opacity: 0.5; }
+      50% { transform: rotate(90deg) translateY(8px); opacity: 1; }
+      100% { transform: rotate(90deg) translateY(0); opacity: 0.5; }
+    }
+
+    @media (max-width: 760px) {
+      .hero-card {
+        padding: 30px 18px 24px;
+      }
+
+      .sea-creature {
+        width: clamp(48px, 15vw, 68px);
+      }
+
+      .wish-row {
+        grid-template-columns: 1fr;
+      }
+
+      .wishes-photo {
+        height: 230px;
+        min-height: 230px;
+      }
+
+      .wishes-copy {
+        padding: 30px 24px 36px;
+      }
+
+      .final-card {
+        padding: 32px 18px;
+      }
+
+      .music-button {
+        right: 12px;
+        bottom: 12px;
+        padding: 10px 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sea-creature {
+        transition-duration: 0.01ms;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="water-bg">
+      <div class="sun-glow"></div>
+      <div class="wave one"></div>
+      <div class="wave two"></div>
+      <div class="wave three"></div>
+      <div class="foam"></div>
+      <div class="bubble-layer" id="bubbleLayer"></div>
+    </div>
+    <div class="creature-layer" id="creatureLayer" aria-label="Pop the swimming sea creatures"></div>
+
+    <div class="content">
+      <section class="hero">
+        <div class="hero-card">
+          <div class="hero-badge">Birthday Celebration</div>
+          <h1>Happy 5th Birthday</h1>
+          <div class="subtitle">Inesh & Advika</div>
+          <div class="scroll-indicator">
+            Scroll to begin<br>
+            <span class="arrow">›</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="gallery-wrap">
+        <div class="gallery-scene" id="galleryScene" aria-label="Birthday photos and blessings"></div>
+      </section>
+
+      <section class="final-section">
+        <div class="final-card">
+          <div class="sparkle s1"></div>
+          <div class="sparkle s2"></div>
+          <div class="sparkle s3"></div>
+          <div class="sparkle s4"></div>
+
+          <h2>With Love & Joy</h2>
+          <p>
+            Two sweet hearts, one big bundle of happiness.<br>
+            Inesh & Advika, may your smiles glow brighter each day, your laughter be endless,
+            and your life be filled with love, fun, and beautiful memories.
+          </p>
+
+          <div class="mini-badges">
+            <span>Smile</span>
+            <span>Love</span>
+            <span>Dreams</span>
+            <span>Joy</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <audio id="birthdayAudio" loop playsinline preload="auto">
+    <source src="./audio.mp3" type="audio/mpeg" />
+  </audio>
+
+  <button id="musicToggle" class="music-button">🔊 Play Music</button>
+
+  <script>
+    const bubbleLayer = document.getElementById("bubbleLayer");
+    const galleryScene = document.getElementById("galleryScene");
+    const creatureLayer = document.getElementById("creatureLayer");
+    const audio = document.getElementById("birthdayAudio");
+    const musicToggle = document.getElementById("musicToggle");
+
+    const creatures = [
+      { image: "./fish.jpg", name: "orange fish" },
+      { image: "./fish1.jpg", name: "blue fish" },
+      { image: "./fish.jpg", name: "green fish", className: "sea-creature--green-fish" },
+      { image: "./shark.jpg", name: "gray shark" },
+      { image: "./shark1.jpg", name: "blue shark" },
+      { image: "./octopus.jpg", name: "purple octopus" }
+    ];
+    const startingSpots = [
+      { x: 0.03, y: 0.16 },
+      { x: 0.78, y: 0.08 },
+      { x: 0.14, y: 0.68 },
+      { x: 0.86, y: 0.58 },
+      { x: 0.38, y: 0.84 },
+      { x: 0.56, y: 0.04 }
+    ];
+    const birthdayBlessings = [
+      "May your birthday begin a year filled with laughter, love, and delightful surprises.",
+      "May you always be brave enough to dream big and joyful enough to enjoy every little thing.",
+      "May kindness guide your steps and bring wonderful friends into your lives.",
+      "May every new day bring you a reason to smile, explore, and learn something lovely.",
+      "May your home always be filled with warm hugs, happy stories, and lots of laughter.",
+      "May you grow strong, curious, and confident, knowing how very loved you are.",
+      "May your brightest dreams take flight and lead you to exciting adventures.",
+      "May you find magic in ordinary moments and happiness in all you do together.",
+      "May your hearts stay gentle, your spirits stay bright, and your smiles shine every day.",
+      "May you always have loving hands to guide you and caring hearts cheering you on.",
+      "May this new year bring fun discoveries, sweet memories, and endless reasons to celebrate.",
+      "May you share a lifetime of friendship, giggles, and wonderful adventures together.",
+      "May hope light your way and love make every step feel special.",
+      "May you keep asking questions, finding wonder, and shining in your own unique ways.",
+      "May happiness follow you wherever you go and love surround you wherever you are.",
+      "May your days be full of joy, your wishes come true, and your future sparkle brightly."
+    ];
+
+    birthdayBlessings.forEach((blessing, index) => {
+      const row = document.createElement("article");
+      const image = document.createElement("img");
+      const message = document.createElement("div");
+      const label = document.createElement("p");
+      const heading = document.createElement("h2");
+      const text = document.createElement("p");
+      const signoff = document.createElement("p");
+
+      row.className = "wish-row";
+      image.className = "wishes-photo";
+      image.src = index === 0 ? "./image.jpg" : `./image${index}.jpg`;
+      image.alt = `Birthday memory ${index + 1} of Inesh and Advika`;
+      image.onerror = () => {
+        row.remove();
+        console.error(`Could not load birthday photo ${index + 1}: ${image.src}`);
+      };
+
+      message.className = "wishes-copy";
+      label.className = "wishes-label";
+      label.textContent = `Birthday blessing ${index + 1}`;
+      heading.textContent = "A wish for your year ahead";
+      text.textContent = `Dear Inesh and Advika, ${blessing}`;
+      signoff.className = "wishes-signoff";
+      signoff.textContent = "With all our love";
+
+      message.append(label, heading, text, signoff);
+      row.append(image, message);
+      galleryScene.appendChild(row);
+    });
+
+    function moveCreature(creature) {
+      if (!creature.isConnected) return;
+
+      const maxLeft = Math.max(0, window.innerWidth - creature.offsetWidth);
+      const maxTop = Math.max(0, window.innerHeight - creature.offsetHeight);
+      const duration = 4500 + Math.random() * 5000;
+      creature.style.transitionDuration = `${duration}ms`;
+      creature.style.left = `${Math.random() * maxLeft}px`;
+      creature.style.top = `${Math.random() * maxTop}px`;
+
+      const image = creature.querySelector("img");
+      image.style.transform = Math.random() < 0.5 ? "scaleX(-1)" : "scaleX(1)";
+      window.setTimeout(() => moveCreature(creature), duration);
+    }
+
+    function releaseColorPapers(x, y) {
+      const colors = ["#ff5b78", "#ffd447", "#54e2b2", "#62b5ff", "#c58bff", "#ff914d"];
+
+      for (let index = 0; index < 28; index++) {
+        const paper = document.createElement("span");
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 55 + Math.random() * 150;
+        paper.className = "color-paper";
+        paper.style.setProperty("--origin-x", `${x}px`);
+        paper.style.setProperty("--origin-y", `${y}px`);
+        paper.style.setProperty("--travel-x", `${Math.cos(angle) * distance}px`);
+        paper.style.setProperty("--travel-y", `${Math.sin(angle) * distance}px`);
+        paper.style.setProperty("--spin", `${Math.random() * 720 - 360}deg`);
+        paper.style.setProperty("--paper-color", colors[index % colors.length]);
+        creatureLayer.appendChild(paper);
+        window.setTimeout(() => paper.remove(), 1300);
+      }
+    }
+
+    creatures.forEach(({ image, name, className }, index) => {
+      const creature = document.createElement("button");
+      const picture = document.createElement("img");
+      creature.type = "button";
+      creature.className = "sea-creature";
+      if (className) creature.classList.add(className);
+      creature.setAttribute("aria-label", `Pop the ${name}`);
+      picture.src = image;
+      picture.alt = "";
+      picture.draggable = false;
+      picture.onerror = () => {
+        creature.remove();
+        console.error(`Could not load sea creature image: ${image}`);
+      };
+      creature.appendChild(picture);
+      creature.addEventListener("click", () => {
+        const bounds = creature.getBoundingClientRect();
+        releaseColorPapers(bounds.left + bounds.width / 2, bounds.top + bounds.height / 2);
+        creature.remove();
+      }, { once: true });
+      creatureLayer.appendChild(creature);
+      const maxLeft = Math.max(0, window.innerWidth - creature.offsetWidth);
+      const maxTop = Math.max(0, window.innerHeight - creature.offsetHeight);
+      creature.style.left = `${startingSpots[index].x * maxLeft}px`;
+      creature.style.top = `${startingSpots[index].y * maxTop}px`;
+      window.setTimeout(() => moveCreature(creature), 100 + index * 250);
+    });
+
+    window.addEventListener("resize", () => {
+      creatureLayer.querySelectorAll(".sea-creature").forEach((creature) => {
+        const maxLeft = Math.max(0, window.innerWidth - creature.offsetWidth);
+        const maxTop = Math.max(0, window.innerHeight - creature.offsetHeight);
+        creature.style.left = `${Math.random() * maxLeft}px`;
+        creature.style.top = `${Math.random() * maxTop}px`;
+      });
+    });
+
+    for (let i = 0; i < 26; i++) {
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.width = `${10 + Math.random() * 18}px`;
+      bubble.style.height = bubble.style.width;
+      bubble.style.animationDelay = `${Math.random() * 4}s`;
+      bubble.style.animationDuration = `${7 + Math.random() * 9}s`;
+      bubbleLayer.appendChild(bubble);
+    }
+
+    function startAudio() {
+      audio.volume = 0.75;
+      audio.loop = true;
+      audio.play().catch(() => {
+        // browser still blocked, but button will allow user interaction
+      });
+    }
+
+    musicToggle.addEventListener("click", () => {
+      if (audio.paused) {
+        startAudio();
+        musicToggle.textContent = "🔊 Music On";
+      } else {
+        audio.pause();
+        musicToggle.textContent = "🔊 Play Music";
+      }
+    });
+
+    window.addEventListener("load", () => {
+      startAudio();
+      musicToggle.textContent = "🔊 Music On";
+    });
+  </script>
+</body>
+</html>
